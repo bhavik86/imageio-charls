@@ -32,7 +32,7 @@ public class CharlsDecoder extends DecoderBase {
 	@Override
     protected int internalDecode(String[] parameters)
 	{
-	   int rc =  	internalDecodeJ2KtoImage(parameters);
+	   int rc =  	nativeDecode(parameters);
 		if (DEBUG_COMPRESS_FROM_BUFFER)
 		{
 			
@@ -63,20 +63,18 @@ public class CharlsDecoder extends DecoderBase {
 
 	@Override
 	protected int internalGetFormat(String[] parameters) {
-		// TODO Auto-generated method stub
-		return internalGetDecodeFormat(parameters);
+		return 0;
 	}	
 
 	
 	//NATIVE METHODS
 
 	/**
-	 * Decode the j2k stream given in the codestream byte[] and fills the
+	 * Decode the jpeg-ls stream given in the codestream byte[] and fills the
 	 * image8, image16 or image24 array, according to the bit depth.
 	 */
 	/* ================================================================== */
-	private native int internalDecodeJ2KtoImage(String[] parameters);
-	private native int internalGetDecodeFormat(String[] parameters);
+	private native int nativeDecode(String[] parameters);
 
 	/* ================================================================== */
 

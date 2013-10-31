@@ -5,6 +5,7 @@ package com.codecCentral.imageio.charls;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -16,31 +17,32 @@ import javax.imageio.spi.ImageReaderWriterSpi;
 import javax.imageio.spi.ServiceRegistry;
 import javax.imageio.stream.ImageInputStream;
 
-import org.codecCentral.imageio.generic.Utils;
 import org.codecCentral.imageio.generic.NativeUtilities;
+import org.codecCentral.imageio.generic.Utils;
 
 
 public class JPLSCharlsImageReaderSpi extends ImageReaderSpi {
 
 
-	final static String JNILibPath = "openjpegjni";
-	final static String LibPath = "openjp2";
-	
+	static List<String> libraries;
+
 	static {
-        NativeUtilities.loadLibraries(LibPath, JNILibPath);
+		libraries = Arrays.asList("CharLS", "CharLS_JNI");
+        NativeUtilities.loadLibraries(libraries);
     }
+	
 	
     protected boolean registered = false;
     
-    static final String[] suffixes = { "jp2", "jp2k", "j2k", "j2c" };
+    static final String[] suffixes = { "jpg", "jpeg"};
      
-    static final String[] formatNames = { "jpeg2000", "jpeg 2000", "JPEG 2000", "JPEG2000" };
+    static final String[] formatNames = { "jpeg-ls", "JPEG-LS" };
      
-    static final String[] MIMETypes = { "image/jp2", "image/jp2k", "image/j2k", "image/j2c" };
+    static final String[] MIMETypes = { "image/jpg", "image/jpeg" };
 
     static final String version = "1.0";
 
-    static final String readerCN = "org.openJpeg.imageio_openjpeg.JP2KOpenJpegImageReader";
+    static final String readerCN = "com.codecCentral.imageio.charls.JPLSCharlsImageReader";
 
     static final String vendorName = "CodecCentral";
 
@@ -156,7 +158,9 @@ public class JPLSCharlsImageReaderSpi extends ImageReaderSpi {
         }
 
         registered = true;
-        if (!NativeUtilities.areLibrariesAvailable(LibPath, JNILibPath)) {
+        
+        
+        if (!NativeUtilities.areLibrariesAvailable(libraries)) {
             final IIORegistry iioRegistry = (IIORegistry) registry;
             final Class<ImageReaderSpi> spiClass = ImageReaderSpi.class;
             final Iterator<ImageReaderSpi> iter = iioRegistry.getServiceProviders(spiClass,true);
@@ -169,7 +173,8 @@ public class JPLSCharlsImageReaderSpi extends ImageReaderSpi {
             return;
         }
         
-        final List<ImageReaderWriterSpi> readers = Utils.getJDKImageReaderWriterSPI(registry,"jpeg2000", true);
+        
+        final List<ImageReaderWriterSpi> readers = Utils.getJDKImageReaderWriterSPI(registry,"jpeg", true);
         for (ImageReaderWriterSpi elem:readers) {
         	if (elem instanceof ImageReaderSpi){
 	            final ImageReaderSpi spi = (ImageReaderSpi) elem;;
