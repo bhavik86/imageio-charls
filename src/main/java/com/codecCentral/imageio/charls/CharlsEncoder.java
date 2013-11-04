@@ -32,24 +32,7 @@ public class CharlsEncoder extends EncoderBase {
 	 */
 	private float[] psnrLayers = null;
 
-	/**
-	 * Contains the 8 bpp version of the image. May NOT be filled together with
-	 * image16 or image24.
-	 * <P>
-	 * We store the 8 or 16 bpp version of the original image while the encoder
-	 * uses a 32 bpp version, because
-	 * <UL>
-	 * <LI>the storage capacity required is smaller
-	 * <LI>the transfer Java --> C will be faster
-	 * <LI>the conversion byte/short ==> int will be done faster by the C
-	 * </UL>
-	 */
 
-	/**
-	 * Holds the compressed stream length, which may be smaller than
-	 * compressedStream.length if this byte[] is pre-allocated
-	 */
-	private long compressedStreamLength = -1;
 
 	/** Holds the compressed version of the index file, returned by the encoder */
 	private byte compressedIndex[] = null;
@@ -89,12 +72,12 @@ public class CharlsEncoder extends EncoderBase {
 	 * ratioLayers must also be filled before calling this method.
 	 */
 	public void encode() {
-		int comressBufferSize = width * height * depth / 8;
+		int comressBufferSize = width * height * getDepth();
 		// Need to allocate / reallocate the compressed stream buffer ? (size =
 		// max possible size = original image size)
 		if (compressedStream == null || compressedStream.length != comressBufferSize) {
 			logMessage("OpenJPEGJavaEncoder.encodeImageToJ2K: (re-)allocating "
-					+ (width * height * depth / 8)
+					+ (width * height * getDepth())
 					+ " bytes for the compressedStream");
 			compressedStream = new byte[comressBufferSize];
 		}
@@ -154,11 +137,11 @@ public class CharlsEncoder extends EncoderBase {
 	 * 
 	 * @return the codestream length.
 	 */
-	private native long internalEncodeImageToJ2K(String[] parameters);
+	private native long nativeEncode(String[] parameters);
 	
 	protected long internalEncode(String[] parameters)
 	{
-		return internalEncodeImageToJ2K(parameters);
+		return nativeEncode(parameters);
 		
 	}
 
@@ -241,10 +224,6 @@ public class CharlsEncoder extends EncoderBase {
 	public void logError(String error) {
 		for (IJavaJ2KEncoderLogger logger : loggers)
 			logger.logEncoderError(error);
-	}
-
-	public long getCompressedStreamLength() {
-		return compressedStreamLength;
 	}
 
 	private String arrayToString(String[] array) {

@@ -9,22 +9,24 @@ import javax.imageio.ImageWriter;
 import javax.imageio.spi.ImageWriterSpi;
 import javax.imageio.stream.ImageOutputStream;
 
-public class JPLSCharlsImageWriterSpi extends ImageWriterSpi {
+import org.codecCentral.imageio.generic.GenericImageWriterSpi;
 
-    static final String[] suffixes = { "JP2", "J2C" };
+public class JPLSCharlsImageWriterSpi extends GenericImageWriterSpi {
 
-    static final String[] formatNames = { "jpeg2000", "jpeg 2000", "JPEG2000", "JPEG 2000", "JP2", "JP2K" };
+    static final String[] suffixes = { "jpeg", "JPEG", "jpg", "JPG" };
 
-    static final String[] MIMETypes = { "image/jp2" };
+    static final String[] formatNames = { "jpeg-ls", "JPEG-LS"};
+
+    static final String[] MIMETypes = { "image/jpeg" };
 
     static final String version = "1.0";
 
-    static final String writerCN = "org.openJpeg.imageio_openjpeg.JP2KOpenJpegImageWriterSpi";
+    static final String writerCN = "com.codecCentral.imageio.charls.JPLSCharlsImageWriterSpi";
 
     static final String vendorName = "CodecCentral";
 
     // ReaderSpiNames
-    static final String[] readerSpiName = { "org.openJpeg.imageio_openjpeg.JP2KOpenJpegImageReaderSpi" };
+    static final String[] readerSpiName = { "com.codecCentral.imageio.charls.JPLSCharlsImageWriterSpi" };
 
     // StreamMetadataFormatNames and StreamMetadataFormatClassNames
     static final boolean supportsStandardStreamMetadataFormat = false;
@@ -80,7 +82,7 @@ public class JPLSCharlsImageWriterSpi extends ImageWriterSpi {
      * @see javax.imageio.spi.IIOServiceProvider#getDescription(java.util.Locale)
      */
     public String getDescription(Locale locale) {
-        return "SPI for JPEG 2000 ImageWriter based on OpenJPEG JNI";
+        return "SPI for JPEG LS ImageWriter based on CharLS JNI";
     }
 
     /**
